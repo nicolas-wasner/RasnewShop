@@ -17,11 +17,12 @@ from django.conf.urls import url
 from django.contrib import admin
 from django.urls import path
 
-from app.views import IndexView
+from app.views import IndexView, RegisterView
 
 urlpatterns = [
     path('admin/', admin.site.urls),
     url(r'^$', IndexView.as_view(), name='app_index'),
+    url('register',RegisterView.as_view(), name='app_register'),
 
 ]
 

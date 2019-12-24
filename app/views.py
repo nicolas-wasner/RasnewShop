@@ -1,10 +1,12 @@
 from django.contrib.auth import authenticate, login
+from django.contrib.auth.models import User
 from django.shortcuts import render, redirect
 
 # Create your views here.
-from django.views.generic import TemplateView
+from django.views.generic import TemplateView, FormView
 
-from app.models import Example, SignUpForm
+from app.forms.register import FormRegister
+from app.models import Example, SignUpForm, Personne
 
 
 class IndexView(TemplateView):
@@ -36,3 +38,19 @@ def signup(request):
     else:
         form = SignUpForm()
     return render(request, 'signup.html', {'form': form})
+
+
+class RegisterView(FormView):
+    template_name = 'register.html'
+    form_class = FormRegister
+
+    def form_valid(self, form):
+        email = form.cleaned_data['username']
+        password_1 = form.cleaned_data['password_1']
+        password_2 = form.cleaned_data['password_2']
+        user = User.objects.create_user(email=email,
+                                 password=password_1)
+        # raise ValidationError() "Leve une erreur de validation / Mais pas conseillé"
+        person = Personne.object.create(user=user)
+        person.save
+        return super().form_valid(form)

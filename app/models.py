@@ -9,6 +9,20 @@ from django.forms import ModelForm
 # Create your models here
 
 
+class Personne(models.Model):
+    user = models.OneToOneField(User, on_delete=models.CASCADE)
+    naissance = models.CharField(max_length=200,
+                             blank=True,null=True,
+                             default='(no title)')
+    description = models.TextField(blank=True,
+                                   null=True,
+                                   default=None)
+    tags = models.ManyToManyField("Tag", related_name="Personne", blank=False)
+
+    def __str__(self):
+        return '{} ({})'.format(self.user, ' / '.join([str(c) for c in self.tags.all()]))
+
+
 class Example(models.Model):
     title = models.CharField(max_length=50)
     description = models.TextField(max_length=300)
